@@ -4,6 +4,10 @@
   "keywords": [ "StrongLoop", "LoopBack", "Remoting", "REST" ],
   "version": "1.0.0",
   "scripts": {
+    "blanket": {
+      "pattern": "//^((?!(node_modules|test)).)*$/"
+    },
+    "coverage": "./node_modules/.bin/mocha -r blanket -R html-cov > coverage_strong-remoting.html",
     "test": "mocha"
   },
   "dependencies": {
@@ -17,6 +21,7 @@
     "mocha": "~1.12.1",
     "supertest": "~0.7.1",
     "socket.io": "~0.9.6",
+    "blanket": "~1.1.5", 
     "socket.io-client": "~0.9.6"
   },
   "repository": {
