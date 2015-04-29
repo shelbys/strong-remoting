@@ -59,6 +59,18 @@ describe('strong-remoting-rest', function(){
       .expect('Content-Type', /json/);
   }
 
+  function xml(method, url) {
+    if (url === undefined) {
+      url = method;
+      method = 'get';
+    }
+
+    return request(app)[method](url)
+      .set('Accept', 'application/xml')
+      .set('Content-Type', 'application/xml')
+      .expect('Content-Type', /xml/);
+  }
+
   describe('remoting options', function(){
     // The 1kb limit is set by RemoteObjects.create({json: {limit: '1kb'}});
     it('should reject json payload larger than 1kb', function(done) {
@@ -83,6 +95,42 @@ describe('strong-remoting-rest', function(){
         .set('Content-Type', 'application/json')
         .send(name)
         .expect(413, done);
+    });
+
+    it('should allow charset=utf-8 in Accept', function(done){
+      var method = givenSharedStaticMethod(
+        function greet(msg, cb) {
+          cb(null, msg);
+        },
+        {
+          accepts: { arg: 'person', type: 'string', http: {source: 'body'} },
+          returns: { arg: 'msg', type: 'string' }
+        }
+      );
+
+      request(app)['post'](method.url)
+        .set('Accept', 'application/json; charset=utf-8')
+        .set('Content-Type', 'application/json')
+        .send('')
+        .expect(200, done);
+    });
+
+    it('should return 406 when charset is not utf-8 in Accept', function(done){
+      var method = givenSharedStaticMethod(
+        function greet(msg, cb) {
+          cb(null, msg);
+        },
+        {
+          accepts: { arg: 'person', type: 'string', http: {source: 'body'} },
+          returns: { arg: 'msg', type: 'string' }
+        }
+      );
+
+      request(app)['post'](method.url)
+        .set('Accept', 'application/json; charset=utf-16')
+        .set('Content-Type', 'application/json')
+        .send('')
+        .expect(406, done);
     });
 
     it('should allow custom error handlers', function(done) {
