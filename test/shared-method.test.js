@@ -52,3 +52,4 @@ describe('SharedMethod', function() {
     });
   });
 });
+
