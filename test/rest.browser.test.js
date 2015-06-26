@@ -13,7 +13,7 @@ describe('strong-remoting-rest', function(){
   var objects;
   var remotes;
   var adapterName = 'rest';
-  
+
   before(function(done) {
     app = express();
     app.use(function (req, res, next) {
@@ -27,7 +27,7 @@ describe('strong-remoting-rest', function(){
   beforeEach(function(){
     objects = RemoteObjects.create();
     remotes = objects.exports;
-    
+
     // connect to the app
     objects.connect('http://localhost:' + server.address().port, adapterName);
   });
@@ -44,7 +44,7 @@ describe('strong-remoting-rest', function(){
             returns: { arg: 'msg', type: 'string' }
           }
         );
-        
+
         var msg = 'hello';
         objects.invoke(method.name, [msg], function(err, resMsg) {
           assert.equal(resMsg, msg);
@@ -70,7 +70,7 @@ describe('strong-remoting-rest', function(){
         objects.invoke(method.name, [1, 2], function(err, n) {
           assert.equal(n, 3);
           done();
-        });  
+        });
       });
 
       it('should allow arguments in the query', function(done) {
@@ -87,7 +87,7 @@ describe('strong-remoting-rest', function(){
             http: { path: '/' }
           }
         );
-        
+
         objects.invoke(method.name, [1, 2], function(err, n) {
           assert.equal(n, 3);
           done();
@@ -129,7 +129,7 @@ describe('strong-remoting-rest', function(){
             ]
           }
         );
-        
+
         objects.invoke(method.name, [], function(err) {
           assert(called);
           done();
@@ -149,7 +149,7 @@ describe('strong-remoting-rest', function(){
             http: { path: '/' }
           }
         );
-        
+
         var obj = {
           foo: 'bar'
         };
@@ -195,7 +195,7 @@ describe('strong-remoting-rest', function(){
             http: { path: '/' }
           }
         );
-        
+
         objects.invoke(method.name, [1, 2], function(err, n) {
           assert.equal(n, 3);
           done();
@@ -245,7 +245,7 @@ describe('strong-remoting-rest', function(){
             http: { path: '/' }
           }
         );
-        
+
         objects.invoke(method.name, [0, '', false], function(err, a, b, c) {
           expect(err).to.not.be.an.instanceof(Error);
           assert.equal(a, 0);
@@ -270,17 +270,17 @@ describe('strong-remoting-rest', function(){
               { arg: 'num', type: 'number' },
               { arg: 'str', type: 'string' },
               { arg: 'bool', type: 'boolean' }
-            ],            
+            ],
             http: { path: '/' }
           }
         );
-        
+
         objects.invoke(method.name, ['', false, 0], function(err, a, b, c) {
           expect(err).to.be.an.instanceof(Error);
           done();
         });
       });
-      
+
       describe('uncaught errors', function () {
         it('should return 500 if an error object is thrown', function (done) {
           var errMsg = 'an error';
@@ -289,7 +289,7 @@ describe('strong-remoting-rest', function(){
               throw new Error(errMsg);
             }
           );
-          
+
           objects.invoke(method.name, function(err) {
             assert(err instanceof Error);
             assert.equal(err.message, errMsg);
@@ -301,86 +301,49 @@ describe('strong-remoting-rest', function(){
   });
 
     describe('Checks argument matches enum', function () {
+      var bar = function (enumParam, cb) {
+        cb(null, enumParam);
+      };
+      var generateOptions = function (array, required) {
+        var type = array ? ['string'] : 'string';
+        return {
+          accepts: [
+            { arg: 'enumParam', type: type, required: required, enum: ['a', 'b', 'c']}
+          ],
+              returns: [
+          { arg: 'enumParam', type: type}
+        ],
+            http: { path: '/' }
+        }
+      };
       describe('in top level', function () {
-        it(', should not allow parameters that are required and not found in enum', function(done) {
-          var method = givenSharedStaticMethod(
-              function bar(enumParam, cb) {
-                cb(null, enumParam);
-              },
-              {
-                accepts: [
-                  { arg: 'enumParam', type: 'string', required: true, enum: ['a', 'b', 'c']}
-                ],
-                returns: [
-                  { arg: 'enumParam', type: 'string'}
-                ],
-                http: { path: '/' }
-              }
-          );
+        it('should not allow parameters that are required and not found in enum', function(done) {
+          var method = givenSharedStaticMethod(bar, generateOptions(false, true));
           objects.invoke(method.name, ['d'], function(err, a) {
             expect(err).to.be.an.instanceof(Error);
             expect(err.message).to.equal("'d' is not one of: a, b, c");
             done();
           });
         });
-        it(', should allow missing not required enum values', function(done) {
-          var method = givenSharedStaticMethod(
-              function bar(enumParam, cb) {
-                cb(null, enumParam);
-              },
-              {
-                accepts: [
-                  { arg: 'enumParam', type: 'string', required: false, enum: ['a', 'b', 'c']}
-                ],
-                returns: [
-                  { arg: 'enumParam', type: 'string'}
-                ],
-                http: { path: '/' }
-              }
-          );
+        it('should allow missing not required enum values', function(done) {
+          var method = givenSharedStaticMethod(bar, generateOptions(false, false));
           objects.invoke(method.name, [null], function(err, a) {
             expect(err).to.not.exist;
             expect(a).to.not.exist;
             done();
           });
         });
-        it(', should match all parameters to a value in enum', function(done) {
-          var method = givenSharedStaticMethod(
-              function bar(enumParam, cb) {
-                cb(null, enumParam);
-              },
-              {
-                accepts: [
-                  { arg: 'enumParam', type: 'string', required: false, enum: ['a', 'b', 'c']}
-                ],
-                returns: [
-                  { arg: 'enumParam', type: 'string'}
-                ],
-                http: { path: '/' }
-              }
-          );
+        it('should match all parameters to a value in enum', function(done) {
+          var method = givenSharedStaticMethod(bar, generateOptions(false, true));
           objects.invoke(method.name, ['a'], function(err, a) {
             expect(err).to.not.exist;
             expect(a).to.exist;
-            assert.equal(['a', 'b', 'c'].indexOf(a) > -1, true);
+            expect(a).to.eql('a');
             done();
           });
         });
-        it(', should match all parameters to all values in enum', function(done) {
-          var method = givenSharedStaticMethod(
-              function bar(enumParam, cb) {
-                cb(null, enumParam);
-              },
-              {
-                accepts: [
-                  { arg: 'enumParam', type: ['string'], required: false, enum: ['a', 'b', 'c']}
-                ],
-                returns: [
-                  { arg: 'enumParam', type: ['string']}
-                ],
-                http: { path: '/' }
-              }
-          );
+        it('should match all parameters to all values in enum', function(done) {
+          var method = givenSharedStaticMethod(bar, generateOptions(true, true));
           objects.invoke(method.name, [['a', 'b', 'c']], function(err, a) {
             expect(err).to.not.exist;
             expect(a).to.exist;
@@ -390,63 +353,24 @@ describe('strong-remoting-rest', function(){
         });
       });
      describe('under items', function () {
-       it(', should not allow parameters that are required and not found in enum', function(done) {
-         var method = givenSharedStaticMethod(
-             function bar(enumParam, cb) {
-               cb(null, enumParam);
-             },
-             {
-               accepts: [
-                 { arg: 'enumParam', type: ['string'], required: true, items: {type: 'string', enum: ['a', 'b', 'c']}}
-               ],
-               returns: [
-                 { arg: 'enumParam', type: ['string']}
-               ],
-               http: { path: '/' }
-             }
-         );
+       it('should not allow parameters that are required and not found in enum', function(done) {
+         var method = givenSharedStaticMethod(bar, generateOptions(true, true));
          objects.invoke(method.name, [['d']], function(err, a) {
            expect(err).to.be.an.instanceof(Error);
            expect(err.message).to.equal("'d' is not one of: a, b, c");
            done();
          });
        });
-       it(', should allow missing not required enum values', function(done) {
-         var method = givenSharedStaticMethod(
-             function bar(enumParam, cb) {
-               cb(null, enumParam);
-             },
-             {
-               accepts: [
-                 { arg: 'enumParam', type: ['string'], required: false, items: {type: 'string', enum: ['a', 'b', 'c']}}
-               ],
-               returns: [
-                 { arg: 'enumParam', type: ['string']}
-               ],
-               http: { path: '/' }
-             }
-         );
+       it('should allow missing not required enum values', function(done) {
+         var method = givenSharedStaticMethod(bar, generateOptions(true, false));
          objects.invoke(method.name, [null], function(err, a) {
            expect(err).to.not.exist;
            expect(a).to.not.exist;
            done();
          });
        });
-       it(', should match all parameters to a value in enum', function(done) {
-         var method = givenSharedStaticMethod(
-             function bar(enumParam, cb) {
-               cb(null, enumParam);
-             },
-             {
-               accepts: [
-                 { arg: 'enumParam', type: ['string'], required: true, items: {type: 'string', enum: ['a', 'b', 'c']}}
-               ],
-               returns: [
-                 { arg: 'enumParam', type: ['string']}
-               ],
-               http: { path: '/' }
-             }
-         );
+       it('should match all parameters to a value in enum', function(done) {
+         var method = givenSharedStaticMethod(bar, generateOptions(true, true));
          objects.invoke(method.name, [['a']], function(err, a) {
            expect(err).to.not.exist;
            expect(a).to.exist;
@@ -454,21 +378,8 @@ describe('strong-remoting-rest', function(){
            done();
          });
        });
-       it(', should match all parameters to all values in enum', function(done) {
-         var method = givenSharedStaticMethod(
-             function bar(enumParam, cb) {
-               cb(null, enumParam);
-             },
-             {
-               accepts: [
-                 { arg: 'enumParam', type: ['string'], required: true, items: {type: 'string', enum: ['a', 'b', 'c']}}
-               ],
-               returns: [
-                 { arg: 'enumParam', type: ['string']}
-               ],
-               http: { path: '/' }
-             }
-         );
+       it('should match all parameters to all values in enum', function(done) {
+         var method = givenSharedStaticMethod(bar, generateOptions(true, true));
          objects.invoke(method.name, [['a', 'b', 'c']], function(err, a) {
            expect(err).to.not.exist;
            expect(a).to.exist;
