@@ -524,4 +524,5 @@ describe('strong-remoting-rest', function(){
       done();
     }
   }
+
 });
