@@ -36,13 +36,13 @@ describe('strong-remoting-rest', function(){
     describe('call of constructor method', function(){
       it('should work', function(done) {
         var method = givenSharedStaticMethod(
-          function greet(msg, cb) {
-            cb(null, msg);
-          },
-          {
-            accepts: { arg: 'person', type: 'string' },
-            returns: { arg: 'msg', type: 'string' }
-          }
+            function greet(msg, cb) {
+              cb(null, msg);
+            },
+            {
+              accepts: { arg: 'person', type: 'string' },
+              returns: { arg: 'msg', type: 'string' }
+            }
         );
 
         var msg = 'hello';
@@ -54,17 +54,17 @@ describe('strong-remoting-rest', function(){
 
       it('should allow arguments in the path', function(done) {
         var method = givenSharedStaticMethod(
-          function bar(a, b, cb) {
-            cb(null, a + b);
-          },
-          {
-            accepts: [
-              { arg: 'b', type: 'number' },
-              { arg: 'a', type: 'number', http: {source: 'path' } }
-            ],
-            returns: { arg: 'n', type: 'number' },
-            http: { path: '/:a' }
-          }
+            function bar(a, b, cb) {
+              cb(null, a + b);
+            },
+            {
+              accepts: [
+                { arg: 'b', type: 'number' },
+                { arg: 'a', type: 'number', http: {source: 'path' } }
+              ],
+              returns: { arg: 'n', type: 'number' },
+              http: { path: '/:a' }
+            }
         );
 
         objects.invoke(method.name, [1, 2], function(err, n) {
@@ -75,17 +75,17 @@ describe('strong-remoting-rest', function(){
 
       it('should allow arguments in the query', function(done) {
         var method = givenSharedStaticMethod(
-          function bar(a, b, cb) {
-            cb(null, a + b);
-          },
-          {
-            accepts: [
-              { arg: 'b', type: 'number' },
-              { arg: 'a', type: 'number', http: {source: 'query' } }
-            ],
-            returns: { arg: 'n', type: 'number' },
-            http: { path: '/' }
-          }
+            function bar(a, b, cb) {
+              cb(null, a + b);
+            },
+            {
+              accepts: [
+                { arg: 'b', type: 'number' },
+                { arg: 'a', type: 'number', http: {source: 'query' } }
+              ],
+              returns: { arg: 'n', type: 'number' },
+              http: { path: '/' }
+            }
         );
 
         objects.invoke(method.name, [1, 2], function(err, n) {
@@ -96,17 +96,17 @@ describe('strong-remoting-rest', function(){
 
       it('should allow arguments in the header', function(done) {
         var method = givenSharedStaticMethod(
-          function bar(a, b, cb) {
-            cb(null, a + b);
-          },
-          {
-            accepts: [
-              { arg: 'b', type: 'number' },
-              { arg: 'a', type: 'number', http: {source: 'header' } }
-            ],
-            returns: { arg: 'n', type: 'number' },
-            http: { path: '/' }
-          }
+            function bar(a, b, cb) {
+              cb(null, a + b);
+            },
+            {
+              accepts: [
+                { arg: 'b', type: 'number' },
+                { arg: 'a', type: 'number', http: {source: 'header' } }
+              ],
+              returns: { arg: 'n', type: 'number' },
+              http: { path: '/' }
+            }
         );
 
         objects.invoke(method.name, [1, 2], function(err, n) {
@@ -118,16 +118,16 @@ describe('strong-remoting-rest', function(){
       it('should pass undefined if the argument is not supplied', function (done) {
         var called = false;
         var method = givenSharedStaticMethod(
-          function bar(a, cb) {
-            called = true;
-            assert(a === undefined, 'a should be undefined');
-            cb();
-          },
-          {
-            accepts: [
-              { arg: 'b', type: 'number' }
-            ]
-          }
+            function bar(a, cb) {
+              called = true;
+              assert(a === undefined, 'a should be undefined');
+              cb();
+            },
+            {
+              accepts: [
+                { arg: 'b', type: 'number' }
+              ]
+            }
         );
 
         objects.invoke(method.name, [], function(err) {
@@ -138,16 +138,16 @@ describe('strong-remoting-rest', function(){
 
       it('should allow arguments in the body', function(done) {
         var method = givenSharedStaticMethod(
-          function bar(a, cb) {
-            cb(null, a);
-          },
-          {
-            accepts: [
-              { arg: 'a', type: 'object', http: {source: 'body' }  }
-            ],
-            returns: { arg: 'data', type: 'object', root: true },
-            http: { path: '/' }
-          }
+            function bar(a, cb) {
+              cb(null, a);
+            },
+            {
+              accepts: [
+                { arg: 'a', type: 'object', http: {source: 'body' }  }
+              ],
+              returns: { arg: 'data', type: 'object', root: true },
+              http: { path: '/' }
+            }
         );
 
         var obj = {
@@ -162,16 +162,16 @@ describe('strong-remoting-rest', function(){
 
       it('should allow arguments in the body with date', function(done) {
         var method = givenSharedStaticMethod(
-          function bar(a, cb) {
-            cb(null, a);
-          },
-          {
-            accepts: [
-              { arg: 'a', type: 'object', http: {source: 'body' }  }
-            ],
-            returns: { arg: 'data', type: 'object', root: true },
-            http: { path: '/' }
-          }
+            function bar(a, cb) {
+              cb(null, a);
+            },
+            {
+              accepts: [
+                { arg: 'a', type: 'object', http: {source: 'body' }  }
+              ],
+              returns: { arg: 'data', type: 'object', root: true },
+              http: { path: '/' }
+            }
         );
 
         var data = {date: {$type: 'date', $data: new Date()}};
@@ -183,17 +183,17 @@ describe('strong-remoting-rest', function(){
 
       it('should allow arguments in the form', function(done) {
         var method = givenSharedStaticMethod(
-          function bar(a, b, cb) {
-            cb(null, a + b);
-          },
-          {
-            accepts: [
-              { arg: 'b', type: 'number', http: {source: 'form' }  },
-              { arg: 'a', type: 'number', http: {source: 'form' } }
-            ],
-            returns: { arg: 'n', type: 'number' },
-            http: { path: '/' }
-          }
+            function bar(a, b, cb) {
+              cb(null, a + b);
+            },
+            {
+              accepts: [
+                { arg: 'b', type: 'number', http: {source: 'form' }  },
+                { arg: 'a', type: 'number', http: {source: 'form' } }
+              ],
+              returns: { arg: 'n', type: 'number' },
+              http: { path: '/' }
+            }
         );
 
         objects.invoke(method.name, [1, 2], function(err, n) {
@@ -204,19 +204,19 @@ describe('strong-remoting-rest', function(){
 
       it('should respond with correct args if returns has multiple args', function(done) {
         var method = givenSharedStaticMethod(
-          function(a, b, cb) {
-            cb(null, a, b);
-          },
-          {
-            accepts: [
-              { arg: 'a', type: 'number' },
-              { arg: 'b', type: 'number' }
-            ],
-            returns: [
-              { arg: 'a', type: 'number' },
-              { arg: 'b', type: 'number' }
-            ]
-          }
+            function(a, b, cb) {
+              cb(null, a, b);
+            },
+            {
+              accepts: [
+                { arg: 'a', type: 'number' },
+                { arg: 'b', type: 'number' }
+              ],
+              returns: [
+                { arg: 'a', type: 'number' },
+                { arg: 'b', type: 'number' }
+              ]
+            }
         );
 
         objects.invoke(method.name, [1, 2], function(err, a, b) {
@@ -228,22 +228,22 @@ describe('strong-remoting-rest', function(){
 
       it('should allow and return falsy required arguments of correct type', function(done) {
         var method = givenSharedStaticMethod(
-          function bar(num, str, bool, cb) {
-            cb(null, num, str, bool);
-          },
-          {
-            accepts: [
-              { arg: 'num', type: 'number', required: true },
-              { arg: 'str', type: 'string', required: true },
-              { arg: 'bool', type: 'boolean', required: true }
-            ],
-            returns: [
-              { arg: 'num', type: 'number' },
-              { arg: 'str', type: 'string' },
-              { arg: 'bool', type: 'boolean' }
-            ],
-            http: { path: '/' }
-          }
+            function bar(num, str, bool, cb) {
+              cb(null, num, str, bool);
+            },
+            {
+              accepts: [
+                { arg: 'num', type: 'number', required: true },
+                { arg: 'str', type: 'string', required: true },
+                { arg: 'bool', type: 'boolean', required: true }
+              ],
+              returns: [
+                { arg: 'num', type: 'number' },
+                { arg: 'str', type: 'string' },
+                { arg: 'bool', type: 'boolean' }
+              ],
+              http: { path: '/' }
+            }
         );
 
         objects.invoke(method.name, [0, '', false], function(err, a, b, c) {
@@ -257,22 +257,22 @@ describe('strong-remoting-rest', function(){
 
       it('should reject falsy required arguments of incorrect type', function(done) {
         var method = givenSharedStaticMethod(
-          function bar(num, str, bool, cb) {
-            cb(null, num, str, bool);
-          },
-          {
-            accepts: [
-              { arg: 'num', type: 'number', required: true },
-              { arg: 'str', type: 'string', required: true },
-              { arg: 'bool', type: 'boolean', required: true }
-            ],
-            returns: [
-              { arg: 'num', type: 'number' },
-              { arg: 'str', type: 'string' },
-              { arg: 'bool', type: 'boolean' }
-            ],
-            http: { path: '/' }
-          }
+            function bar(num, str, bool, cb) {
+              cb(null, num, str, bool);
+            },
+            {
+              accepts: [
+                { arg: 'num', type: 'number', required: true },
+                { arg: 'str', type: 'string', required: true },
+                { arg: 'bool', type: 'boolean', required: true }
+              ],
+              returns: [
+                { arg: 'num', type: 'number' },
+                { arg: 'str', type: 'string' },
+                { arg: 'bool', type: 'boolean' }
+              ],
+              http: { path: '/' }
+            }
         );
 
         objects.invoke(method.name, ['', false, 0], function(err, a, b, c) {
@@ -285,9 +285,9 @@ describe('strong-remoting-rest', function(){
         it('should return 500 if an error object is thrown', function (done) {
           var errMsg = 'an error';
           var method = givenSharedStaticMethod(
-            function(a, b, cb) {
-              throw new Error(errMsg);
-            }
+              function(a, b, cb) {
+                throw new Error(errMsg);
+              }
           );
 
           objects.invoke(method.name, function(err) {
@@ -300,95 +300,95 @@ describe('strong-remoting-rest', function(){
     });
   });
 
-    describe('Checks argument matches enum', function () {
-      var bar = function (enumParam, cb) {
-        cb(null, enumParam);
-      };
-      var generateOptions = function (array, required) {
-        var type = array ? ['string'] : 'string';
-        return {
-          accepts: [
-            { arg: 'enumParam', type: type, required: required, enum: ['a', 'b', 'c']}
-          ],
-              returns: [
+  describe('Checks argument matches enum', function () {
+    var bar = function (enumParam, cb) {
+      cb(null, enumParam);
+    };
+    var generateOptions = function (array, required) {
+      var type = array ? ['string'] : 'string';
+      return {
+        accepts: [
+          { arg: 'enumParam', type: type, required: required, enum: ['a', 'b', 'c']}
+        ],
+        returns: [
           { arg: 'enumParam', type: type}
         ],
-            http: { path: '/' }
-        }
-      };
-      describe('in top level', function () {
-        it('should not allow parameters that are required and not found in enum', function(done) {
-          var method = givenSharedStaticMethod(bar, generateOptions(false, true));
-          objects.invoke(method.name, ['d'], function(err, a) {
-            expect(err).to.be.an.instanceof(Error);
-            expect(err.message).to.equal("'d' is not one of: a, b, c");
-            done();
-          });
-        });
-        it('should allow missing not required enum values', function(done) {
-          var method = givenSharedStaticMethod(bar, generateOptions(false, false));
-          objects.invoke(method.name, [null], function(err, a) {
-            expect(err).to.not.exist;
-            expect(a).to.not.exist;
-            done();
-          });
-        });
-        it('should match all parameters to a value in enum', function(done) {
-          var method = givenSharedStaticMethod(bar, generateOptions(false, true));
-          objects.invoke(method.name, ['a'], function(err, a) {
-            expect(err).to.not.exist;
-            expect(a).to.exist;
-            expect(a).to.eql('a');
-            done();
-          });
-        });
-        it('should match all parameters to all values in enum', function(done) {
-          var method = givenSharedStaticMethod(bar, generateOptions(true, true));
-          objects.invoke(method.name, [['a', 'b', 'c']], function(err, a) {
-            expect(err).to.not.exist;
-            expect(a).to.exist;
-            expect(a).to.eql(['a', 'b', 'c']);
-            done();
-          });
+        http: { path: '/' }
+      }
+    };
+    describe('in top level', function () {
+      it('should not allow parameters that are required and not found in enum', function(done) {
+        var method = givenSharedStaticMethod(bar, generateOptions(false, true));
+        objects.invoke(method.name, ['d'], function(err, a) {
+          expect(err).to.be.an.instanceof(Error);
+          expect(err.message).to.equal("'d' is not one of: a, b, c");
+          done();
         });
       });
-     describe('under items', function () {
-       it('should not allow parameters that are required and not found in enum', function(done) {
-         var method = givenSharedStaticMethod(bar, generateOptions(true, true));
-         objects.invoke(method.name, [['d']], function(err, a) {
-           expect(err).to.be.an.instanceof(Error);
-           expect(err.message).to.equal("'d' is not one of: a, b, c");
-           done();
-         });
-       });
-       it('should allow missing not required enum values', function(done) {
-         var method = givenSharedStaticMethod(bar, generateOptions(true, false));
-         objects.invoke(method.name, [null], function(err, a) {
-           expect(err).to.not.exist;
-           expect(a).to.not.exist;
-           done();
-         });
-       });
-       it('should match all parameters to a value in enum', function(done) {
-         var method = givenSharedStaticMethod(bar, generateOptions(true, true));
-         objects.invoke(method.name, [['a']], function(err, a) {
-           expect(err).to.not.exist;
-           expect(a).to.exist;
-           expect(a).to.eql(['a']);
-           done();
-         });
-       });
-       it('should match all parameters to all values in enum', function(done) {
-         var method = givenSharedStaticMethod(bar, generateOptions(true, true));
-         objects.invoke(method.name, [['a', 'b', 'c']], function(err, a) {
-           expect(err).to.not.exist;
-           expect(a).to.exist;
-           expect(a).to.eql(['a', 'b', 'c']);
-           done();
-         });
-       });
-     });
+      it('should allow missing not required enum values', function(done) {
+        var method = givenSharedStaticMethod(bar, generateOptions(false, false));
+        objects.invoke(method.name, [null], function(err, a) {
+          expect(err).to.not.exist;
+          expect(a).to.not.exist;
+          done();
+        });
+      });
+      it('should match all parameters to a value in enum', function(done) {
+        var method = givenSharedStaticMethod(bar, generateOptions(false, true));
+        objects.invoke(method.name, ['a'], function(err, a) {
+          expect(err).to.not.exist;
+          expect(a).to.exist;
+          expect(a).to.eql('a');
+          done();
+        });
+      });
+      it('should match all parameters to all values in enum', function(done) {
+        var method = givenSharedStaticMethod(bar, generateOptions(true, true));
+        objects.invoke(method.name, [['a', 'b', 'c']], function(err, a) {
+          expect(err).to.not.exist;
+          expect(a).to.exist;
+          expect(a).to.eql(['a', 'b', 'c']);
+          done();
+        });
+      });
     });
+    describe('under items', function () {
+      it('should not allow parameters that are required and not found in enum', function(done) {
+        var method = givenSharedStaticMethod(bar, generateOptions(true, true));
+        objects.invoke(method.name, [['d']], function(err, a) {
+          expect(err).to.be.an.instanceof(Error);
+          expect(err.message).to.equal("'d' is not one of: a, b, c");
+          done();
+        });
+      });
+      it('should allow missing not required enum values', function(done) {
+        var method = givenSharedStaticMethod(bar, generateOptions(true, false));
+        objects.invoke(method.name, [null], function(err, a) {
+          expect(err).to.not.exist;
+          expect(a).to.not.exist;
+          done();
+        });
+      });
+      it('should match all parameters to a value in enum', function(done) {
+        var method = givenSharedStaticMethod(bar, generateOptions(true, true));
+        objects.invoke(method.name, [['a']], function(err, a) {
+          expect(err).to.not.exist;
+          expect(a).to.exist;
+          expect(a).to.eql(['a']);
+          done();
+        });
+      });
+      it('should match all parameters to all values in enum', function(done) {
+        var method = givenSharedStaticMethod(bar, generateOptions(true, true));
+        objects.invoke(method.name, [['a', 'b', 'c']], function(err, a) {
+          expect(err).to.not.exist;
+          expect(a).to.exist;
+          expect(a).to.eql(['a', 'b', 'c']);
+          done();
+        });
+      });
+    });
+  });
 
   function givenSharedStaticMethod(fn, config) {
     if (typeof fn === 'object' && config === undefined) {
