@@ -329,6 +329,16 @@ describe('strong-remoting-rest', function() {
           });
         }
       );
+      it('should allow an empty array for not required parameters',
+        function(done) {
+          var method = givenSharedStaticMethod(bar, generateOptions(true, false));
+          objects.invoke(method.name, [], function(err, a) {
+            expect(err).to.not.exist;
+            expect(a).to.eql([]);
+            done();
+          });
+        }
+      );
       it('should allow missing not required enum values', function(done) {
         var method = givenSharedStaticMethod(bar, generateOptions(false, false));
         objects.invoke(method.name, [null], function(err, a) {
@@ -367,11 +377,21 @@ describe('strong-remoting-rest', function() {
           });
         }
       );
+      it('should allow an array with an empty array for not required parameters',
+          function(done) {
+            var method = givenSharedStaticMethod(bar, generateOptions(true, false));
+            objects.invoke(method.name, [[]], function(err, a) {
+              expect(err).to.not.exist;
+              expect(a).to.eql([]);
+              done();
+            });
+          }
+      );
       it('should allow missing not required enum values', function(done) {
         var method = givenSharedStaticMethod(bar, generateOptions(true, false));
         objects.invoke(method.name, [null], function(err, a) {
-          expect(err).to.be.an.instanceof(Error);
-          expect(err.message).to.equal('\'\' is not one of: a, b, c');
+          expect(err).to.not.exist;
+          expect(a).to.eql([]);
           done();
         });
       });
