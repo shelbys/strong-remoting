@@ -377,6 +377,26 @@ describe('strong-remoting-rest', function() {
           });
         }
       );
+      it('should not allow parameters where only some are found [one not found]',
+          function(done) {
+            var method = givenSharedStaticMethod(bar, generateOptions(true, false));
+            objects.invoke(method.name, [['a', 'd']], function(err, a) {
+              expect(err).to.be.an.instanceof(Error);
+              expect(err.message).to.equal('\'d\' is not one of: a, b, c');
+              done();
+            });
+          }
+      );
+      it('should not allow parameters where only some are found [multiple not found]',
+          function(done) {
+            var method = givenSharedStaticMethod(bar, generateOptions(true, false));
+            objects.invoke(method.name, [['a', 'd', 'e']], function(err, a) {
+              expect(err).to.be.an.instanceof(Error);
+              expect(err.message).to.equal('\'d, e\' are not one of: a, b, c');
+              done();
+            });
+          }
+      );
       it('should allow an array with an empty array for not required parameters',
           function(done) {
             var method = givenSharedStaticMethod(bar, generateOptions(true, false));
