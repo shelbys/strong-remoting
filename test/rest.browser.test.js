@@ -36,13 +36,13 @@ describe('strong-remoting-rest', function() {
     describe('call of constructor method', function() {
       it('should work', function(done) {
         var method = givenSharedStaticMethod(
-            function greet(msg, cb) {
-              cb(null, msg);
-            },
-            {
-              accepts: { arg: 'person', type: 'string' },
-              returns: { arg: 'msg', type: 'string' }
-            }
+          function greet(msg, cb) {
+            cb(null, msg);
+          },
+          {
+            accepts: { arg: 'person', type: 'string' },
+            returns: { arg: 'msg', type: 'string' }
+          }
         );
 
         var msg = 'hello';
@@ -54,17 +54,17 @@ describe('strong-remoting-rest', function() {
 
       it('should allow arguments in the path', function(done) {
         var method = givenSharedStaticMethod(
-            function bar(a, b, cb) {
-              cb(null, a + b);
-            },
-            {
-              accepts: [
-                { arg: 'b', type: 'number' },
-                { arg: 'a', type: 'number', http: {source: 'path' } }
-              ],
-              returns: { arg: 'n', type: 'number' },
-              http: { path: '/:a' }
-            }
+          function bar(a, b, cb) {
+            cb(null, a + b);
+          },
+          {
+            accepts: [
+              { arg: 'b', type: 'number' },
+              { arg: 'a', type: 'number', http: {source: 'path' } }
+            ],
+            returns: { arg: 'n', type: 'number' },
+            http: { path: '/:a' }
+          }
         );
 
         objects.invoke(method.name, [1, 2], function(err, n) {
@@ -75,17 +75,17 @@ describe('strong-remoting-rest', function() {
 
       it('should allow arguments in the query', function(done) {
         var method = givenSharedStaticMethod(
-            function bar(a, b, cb) {
-              cb(null, a + b);
-            },
-            {
-              accepts: [
-                { arg: 'b', type: 'number' },
-                { arg: 'a', type: 'number', http: {source: 'query' } }
-              ],
-              returns: { arg: 'n', type: 'number' },
-              http: { path: '/' }
-            }
+          function bar(a, b, cb) {
+            cb(null, a + b);
+          },
+          {
+            accepts: [
+              { arg: 'b', type: 'number' },
+              { arg: 'a', type: 'number', http: {source: 'query' } }
+            ],
+            returns: { arg: 'n', type: 'number' },
+            http: { path: '/' }
+          }
         );
 
         objects.invoke(method.name, [1, 2], function(err, n) {
@@ -96,17 +96,17 @@ describe('strong-remoting-rest', function() {
 
       it('should allow arguments in the header', function(done) {
         var method = givenSharedStaticMethod(
-            function bar(a, b, cb) {
-              cb(null, a + b);
-            },
-            {
-              accepts: [
-                { arg: 'b', type: 'number' },
-                { arg: 'a', type: 'number', http: {source: 'header' } }
-              ],
-              returns: { arg: 'n', type: 'number' },
-              http: { path: '/' }
-            }
+          function bar(a, b, cb) {
+            cb(null, a + b);
+          },
+          {
+            accepts: [
+              { arg: 'b', type: 'number' },
+              { arg: 'a', type: 'number', http: {source: 'header' } }
+            ],
+            returns: { arg: 'n', type: 'number' },
+            http: { path: '/' }
+          }
         );
 
         objects.invoke(method.name, [1, 2], function(err, n) {
@@ -118,16 +118,16 @@ describe('strong-remoting-rest', function() {
       it('should pass undefined if the argument is not supplied', function(done) {
         var called = false;
         var method = givenSharedStaticMethod(
-            function bar(a, cb) {
-              called = true;
-              assert(a === undefined, 'a should be undefined');
-              cb();
-            },
-            {
-              accepts: [
-                { arg: 'b', type: 'number' }
-              ]
-            }
+          function bar(a, cb) {
+            called = true;
+            assert(a === undefined, 'a should be undefined');
+            cb();
+          },
+          {
+            accepts: [
+              { arg: 'b', type: 'number' }
+            ]
+          }
         );
 
         objects.invoke(method.name, [], function(err) {
@@ -138,16 +138,16 @@ describe('strong-remoting-rest', function() {
 
       it('should allow arguments in the body', function(done) {
         var method = givenSharedStaticMethod(
-            function bar(a, cb) {
-              cb(null, a);
-            },
-            {
-              accepts: [
-                { arg: 'a', type: 'object', http: {source: 'body' }  }
-              ],
-              returns: { arg: 'data', type: 'object', root: true },
-              http: { path: '/' }
-            }
+          function bar(a, cb) {
+            cb(null, a);
+          },
+          {
+            accepts: [
+              { arg: 'a', type: 'object', http: {source: 'body' }  }
+            ],
+            returns: { arg: 'data', type: 'object', root: true },
+            http: { path: '/' }
+          }
         );
 
         var obj = {
@@ -162,16 +162,16 @@ describe('strong-remoting-rest', function() {
 
       it('should allow arguments in the body with date', function(done) {
         var method = givenSharedStaticMethod(
-            function bar(a, cb) {
-              cb(null, a);
-            },
-            {
-              accepts: [
-                { arg: 'a', type: 'object', http: {source: 'body' }  }
-              ],
-              returns: { arg: 'data', type: 'object', root: true },
-              http: { path: '/' }
-            }
+          function bar(a, cb) {
+            cb(null, a);
+          },
+          {
+            accepts: [
+              { arg: 'a', type: 'object', http: {source: 'body' }  }
+            ],
+            returns: { arg: 'data', type: 'object', root: true },
+            http: { path: '/' }
+          }
         );
 
         var data = {date: {$type: 'date', $data: new Date()}};
@@ -183,17 +183,17 @@ describe('strong-remoting-rest', function() {
 
       it('should allow arguments in the form', function(done) {
         var method = givenSharedStaticMethod(
-            function bar(a, b, cb) {
-              cb(null, a + b);
-            },
-            {
-              accepts: [
-                { arg: 'b', type: 'number', http: {source: 'form' }  },
-                { arg: 'a', type: 'number', http: {source: 'form' } }
-              ],
-              returns: { arg: 'n', type: 'number' },
-              http: { path: '/' }
-            }
+          function bar(a, b, cb) {
+            cb(null, a + b);
+          },
+          {
+            accepts: [
+              { arg: 'b', type: 'number', http: {source: 'form' }  },
+              { arg: 'a', type: 'number', http: {source: 'form' } }
+            ],
+            returns: { arg: 'n', type: 'number' },
+            http: { path: '/' }
+          }
         );
 
         objects.invoke(method.name, [1, 2], function(err, n) {
@@ -204,19 +204,19 @@ describe('strong-remoting-rest', function() {
 
       it('should respond with correct args if returns has multiple args', function(done) {
         var method = givenSharedStaticMethod(
-            function(a, b, cb) {
-              cb(null, a, b);
-            },
-            {
-              accepts: [
-                { arg: 'a', type: 'number' },
-                { arg: 'b', type: 'number' }
-              ],
-              returns: [
-                { arg: 'a', type: 'number' },
-                { arg: 'b', type: 'number' }
-              ]
-            }
+          function(a, b, cb) {
+            cb(null, a, b);
+          },
+          {
+            accepts: [
+              { arg: 'a', type: 'number' },
+              { arg: 'b', type: 'number' }
+            ],
+            returns: [
+              { arg: 'a', type: 'number' },
+              { arg: 'b', type: 'number' }
+            ]
+          }
         );
 
         objects.invoke(method.name, [1, 2], function(err, a, b) {
@@ -287,9 +287,9 @@ describe('strong-remoting-rest', function() {
         it('should return 500 if an error object is thrown', function(done) {
           var errMsg = 'an error';
           var method = givenSharedStaticMethod(
-              function(a, b, cb) {
-                throw new Error(errMsg);
-              }
+            function(a, b, cb) {
+              throw new Error(errMsg);
+            }
           );
 
           objects.invoke(method.name, function(err) {
