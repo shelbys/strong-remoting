@@ -324,7 +324,7 @@ describe('strong-remoting-rest', function() {
           var method = givenSharedStaticMethod(bar, generateOptions(false, true));
           objects.invoke(method.name, ['d'], function(err, a) {
             expect(err).to.be.an.instanceof(Error);
-            expect(err.message).to.equal('\'d\' is not one of: a, b, c');
+            expect(err.message).to.equal('\'d\' not one of: a, b, c');
             done();
           });
         }
@@ -372,7 +372,7 @@ describe('strong-remoting-rest', function() {
           var method = givenSharedStaticMethod(bar, generateOptions(true, true));
           objects.invoke(method.name, [['d']], function(err, a) {
             expect(err).to.be.an.instanceof(Error);
-            expect(err.message).to.equal('\'d\' is not one of: a, b, c');
+            expect(err.message).to.equal('\'d\' not one of: a, b, c');
             done();
           });
         }
@@ -382,7 +382,7 @@ describe('strong-remoting-rest', function() {
             var method = givenSharedStaticMethod(bar, generateOptions(true, false));
             objects.invoke(method.name, [['a', 'd']], function(err, a) {
               expect(err).to.be.an.instanceof(Error);
-              expect(err.message).to.equal('\'d\' is not one of: a, b, c');
+              expect(err.message).to.equal('\'d\' not one of: a, b, c');
               done();
             });
           }
@@ -392,7 +392,7 @@ describe('strong-remoting-rest', function() {
             var method = givenSharedStaticMethod(bar, generateOptions(true, false));
             objects.invoke(method.name, [['a', 'd', 'e']], function(err, a) {
               expect(err).to.be.an.instanceof(Error);
-              expect(err.message).to.equal('\'d, e\' are not one of: a, b, c');
+              expect(err.message).to.equal('\'d, e\' not one of: a, b, c');
               done();
             });
           }
