@@ -320,14 +320,14 @@ describe('strong-remoting-rest', function() {
     };
     describe('in top level', function() {
       it('should not allow parameters that are required and not found in enum',
-        function(done) {
-          var method = givenSharedStaticMethod(bar, generateOptions(false, true));
-          objects.invoke(method.name, ['d'], function(err, a) {
-            expect(err).to.be.an.instanceof(Error);
-            expect(err.message).to.equal('\'d\' not one of: a, b, c');
-            done();
-          });
-        }
+          function(done) {
+            var method = givenSharedStaticMethod(bar, generateOptions(false, true));
+            objects.invoke(method.name, ['d'], function(err, a) {
+              expect(err).to.be.an.instanceof(Error);
+              expect(err.message).to.equal('\'d\' not one of: a, b, c');
+              done();
+            });
+          }
       );
       it('should allow an empty array for not required parameters',
         function(done) {
@@ -365,6 +365,16 @@ describe('strong-remoting-rest', function() {
           done();
         });
       });
+      it('should not allow json parameters that are required and not found in enum',
+          function(done) {
+            var method = givenSharedStaticMethod(bar, generateOptions(true, true));
+            objects.invoke(method.name, [['a,b,c']], function(err, a) {
+              expect(err).to.be.an.instanceof(Error);
+              expect(err.message).to.equal('\'a,b,c\' not one of: a, b, c');
+              done();
+            });
+          }
+      );
     });
     describe('under items', function() {
       it('should not allow parameters that are required and not found in enum',

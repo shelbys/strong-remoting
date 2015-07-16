@@ -105,6 +105,16 @@ describe('HttpContext', function() {
         expectedValue: [1, 2, 3],
         arrayItemDelimiters:  DELIMITERS
       }));
+
+      it('should handle JSON for invalid string array arg with enum',
+        givenMethodExpectArg({
+          type: ['string'],
+          enum: ['a', 'b', 'c'],
+          input: '["a,b,c"]',
+          expectedValue: ['a,b,c'],
+          arrayItemDelimiters:  DELIMITERS
+        })
+      );
     });
   });
 });
@@ -118,8 +128,8 @@ function givenMethodExpectArg(options) {
     var app = require('express')();
 
     app.get('/', function(req, res) {
-      var ctx = new HttpContext(req, res, method, options);
       try {
+        var ctx = new HttpContext(req, res, method, options);
         expect(ctx.args.testArg).to.eql(options.expectedValue);
       } catch (e) {
         return done(e);
