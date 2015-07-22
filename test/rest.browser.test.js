@@ -7,16 +7,16 @@ var request = require('supertest');
 var expect = require('chai').expect;
 var factory = require('./helpers/shared-objects-factory.js');
 
-describe('strong-remoting-rest', function(){
+describe('strong-remoting-rest', function() {
   var app;
   var server;
   var objects;
   var remotes;
   var adapterName = 'rest';
-  
+
   before(function(done) {
     app = express();
-    app.use(function (req, res, next) {
+    app.use(function(req, res, next) {
       // create the handler for each request
       objects.handler(adapterName).apply(objects, arguments);
     });
@@ -24,16 +24,16 @@ describe('strong-remoting-rest', function(){
   });
 
   // setup
-  beforeEach(function(){
+  beforeEach(function() {
     objects = RemoteObjects.create();
     remotes = objects.exports;
-    
+
     // connect to the app
     objects.connect('http://localhost:' + server.address().port, adapterName);
   });
 
   describe('client', function() {
-    describe('call of constructor method', function(){
+    describe('call of constructor method', function() {
       it('should work', function(done) {
         var method = givenSharedStaticMethod(
           function greet(msg, cb) {
@@ -44,7 +44,7 @@ describe('strong-remoting-rest', function(){
             returns: { arg: 'msg', type: 'string' }
           }
         );
-        
+
         var msg = 'hello';
         objects.invoke(method.name, [msg], function(err, resMsg) {
           assert.equal(resMsg, msg);
@@ -70,7 +70,7 @@ describe('strong-remoting-rest', function(){
         objects.invoke(method.name, [1, 2], function(err, n) {
           assert.equal(n, 3);
           done();
-        });  
+        });
       });
 
       it('should allow arguments in the query', function(done) {
@@ -87,7 +87,7 @@ describe('strong-remoting-rest', function(){
             http: { path: '/' }
           }
         );
-        
+
         objects.invoke(method.name, [1, 2], function(err, n) {
           assert.equal(n, 3);
           done();
@@ -115,7 +115,7 @@ describe('strong-remoting-rest', function(){
         });
       });
 
-      it('should pass undefined if the argument is not supplied', function (done) {
+      it('should pass undefined if the argument is not supplied', function(done) {
         var called = false;
         var method = givenSharedStaticMethod(
           function bar(a, cb) {
@@ -129,7 +129,7 @@ describe('strong-remoting-rest', function(){
             ]
           }
         );
-        
+
         objects.invoke(method.name, [], function(err) {
           assert(called);
           done();
@@ -149,7 +149,7 @@ describe('strong-remoting-rest', function(){
             http: { path: '/' }
           }
         );
-        
+
         var obj = {
           foo: 'bar'
         };
@@ -195,7 +195,7 @@ describe('strong-remoting-rest', function(){
             http: { path: '/' }
           }
         );
-        
+
         objects.invoke(method.name, [1, 2], function(err, n) {
           assert.equal(n, 3);
           done();
@@ -226,34 +226,36 @@ describe('strong-remoting-rest', function(){
         });
       });
 
-      it('should allow and return falsy required arguments of correct type', function(done) {
-        var method = givenSharedStaticMethod(
-          function bar(num, str, bool, cb) {
-            cb(null, num, str, bool);
-          },
-          {
-            accepts: [
-              { arg: 'num', type: 'number', required: true },
-              { arg: 'str', type: 'string', required: true },
-              { arg: 'bool', type: 'boolean', required: true }
-            ],
-            returns: [
-              { arg: 'num', type: 'number' },
-              { arg: 'str', type: 'string' },
-              { arg: 'bool', type: 'boolean' }
-            ],
-            http: { path: '/' }
-          }
-        );
-        
-        objects.invoke(method.name, [0, '', false], function(err, a, b, c) {
-          expect(err).to.not.be.an.instanceof(Error);
-          assert.equal(a, 0);
-          assert.equal(b, '');
-          assert.equal(c, false);
-          done();
-        });
-      });
+      it('should allow and return falsy required arguments of correct type',
+        function(done) {
+          var method = givenSharedStaticMethod(
+            function bar(num, str, bool, cb) {
+              cb(null, num, str, bool);
+            },
+            {
+              accepts: [
+                { arg: 'num', type: 'number', required: true },
+                { arg: 'str', type: 'string', required: true },
+                { arg: 'bool', type: 'boolean', required: true }
+              ],
+              returns: [
+                { arg: 'num', type: 'number' },
+                { arg: 'str', type: 'string' },
+                { arg: 'bool', type: 'boolean' }
+              ],
+              http: { path: '/' }
+            }
+          );
+
+          objects.invoke(method.name, [0, '', false], function(err, a, b, c) {
+            expect(err).to.not.be.an.instanceof(Error);
+            assert.equal(a, 0);
+            assert.equal(b, '');
+            assert.equal(c, false);
+            done();
+          });
+        }
+      );
 
       it('should reject falsy required arguments of incorrect type', function(done) {
         var method = givenSharedStaticMethod(
@@ -270,31 +272,175 @@ describe('strong-remoting-rest', function(){
               { arg: 'num', type: 'number' },
               { arg: 'str', type: 'string' },
               { arg: 'bool', type: 'boolean' }
-            ],            
+            ],
             http: { path: '/' }
           }
         );
-        
+
         objects.invoke(method.name, ['', false, 0], function(err, a, b, c) {
           expect(err).to.be.an.instanceof(Error);
           done();
         });
       });
-      
-      describe('uncaught errors', function () {
-        it('should return 500 if an error object is thrown', function (done) {
+
+      describe('uncaught errors', function() {
+        it('should return 500 if an error object is thrown', function(done) {
           var errMsg = 'an error';
           var method = givenSharedStaticMethod(
             function(a, b, cb) {
               throw new Error(errMsg);
             }
           );
-          
+
           objects.invoke(method.name, function(err) {
             assert(err instanceof Error);
             assert.equal(err.message, errMsg);
             done();
           });
+        });
+      });
+    });
+  });
+
+  describe('Checks argument matches enum', function() {
+    var bar = function(enumParam, cb) {
+      cb(null, enumParam);
+    };
+    var generateOptions = function(array, required) {
+      var type = array ? ['string'] : 'string';
+      return {
+        accepts: [
+          { arg: 'enumParam', type: type, required: required, enum: ['a', 'b', 'c']}
+        ],
+        returns: [
+          { arg: 'enumParam', type: type}
+        ],
+        http: { path: '/' }
+      };
+    };
+    describe('in top level', function() {
+      it('should not allow parameters that are required and not found in enum',
+        function(done) {
+          var method = givenSharedStaticMethod(bar, generateOptions(false, true));
+          objects.invoke(method.name, ['d'], function(err, a) {
+            expect(err).to.be.an.instanceof(Error);
+            expect(err.message).to.equal('\'d\' not any of: a, b, c');
+            done();
+          });
+        }
+      );
+      it('should allow an empty array for not required parameters',
+        function(done) {
+          var method = givenSharedStaticMethod(bar, generateOptions(true, false));
+          objects.invoke(method.name, [], function(err, a) {
+            expect(err).to.not.exist;
+            expect(a).to.eql([]);
+            done();
+          });
+        }
+      );
+      it('should allow missing not required enum values', function(done) {
+        var method = givenSharedStaticMethod(bar, generateOptions(false, false));
+        objects.invoke(method.name, [null], function(err, a) {
+          expect(err).to.not.exist;
+          expect(a).to.not.exist;
+          done();
+        });
+      });
+      it('should match all parameters to a value in enum', function(done) {
+        var method = givenSharedStaticMethod(bar, generateOptions(false, true));
+        objects.invoke(method.name, ['a'], function(err, a) {
+          expect(err).to.not.exist;
+          expect(a).to.exist;
+          expect(a).to.eql('a');
+          done();
+        });
+      });
+      it('should match all parameters to all values in enum', function(done) {
+        var method = givenSharedStaticMethod(bar, generateOptions(true, true));
+        objects.invoke(method.name, [['a', 'b', 'c']], function(err, a) {
+          expect(err).to.not.exist;
+          expect(a).to.exist;
+          expect(a).to.eql(['a', 'b', 'c']);
+          done();
+        });
+      });
+      it('should not allow json parameters that are required and not found in enum',
+          function(done) {
+            var method = givenSharedStaticMethod(bar, generateOptions(true, true));
+            objects.invoke(method.name, [['a,b,c']], function(err, a) {
+              expect(err).to.be.an.instanceof(Error);
+              expect(err.message).to.equal('\'a,b,c\' not one of: a, b, c');
+              done();
+            });
+          }
+      );
+    });
+    describe('under items', function() {
+      it('should not allow parameters that are required and not found in enum',
+        function(done) {
+          var method = givenSharedStaticMethod(bar, generateOptions(true, true));
+          objects.invoke(method.name, [['d']], function(err, a) {
+            expect(err).to.be.an.instanceof(Error);
+            expect(err.message).to.equal('\'d\' not any of: a, b, c');
+            done();
+          });
+        }
+      );
+      it('should not allow parameters where only some are found [one not found]',
+          function(done) {
+            var method = givenSharedStaticMethod(bar, generateOptions(true, false));
+            objects.invoke(method.name, [['a', 'd']], function(err, a) {
+              expect(err).to.be.an.instanceof(Error);
+              expect(err.message).to.equal('\'d\' not any of: a, b, c');
+              done();
+            });
+          }
+      );
+      it('should not allow parameters where only some are found [multiple not found]',
+          function(done) {
+            var method = givenSharedStaticMethod(bar, generateOptions(true, false));
+            objects.invoke(method.name, [['a', 'd', 'e']], function(err, a) {
+              expect(err).to.be.an.instanceof(Error);
+              expect(err.message).to.equal('\'d, e\' not any of: a, b, c');
+              done();
+            });
+          }
+      );
+      it('should allow an array with an empty array for not required parameters',
+          function(done) {
+            var method = givenSharedStaticMethod(bar, generateOptions(true, false));
+            objects.invoke(method.name, [[]], function(err, a) {
+              expect(err).to.not.exist;
+              expect(a).to.eql([]);
+              done();
+            });
+          }
+      );
+      it('should allow missing not required enum values', function(done) {
+        var method = givenSharedStaticMethod(bar, generateOptions(true, false));
+        objects.invoke(method.name, [null], function(err, a) {
+          expect(err).to.not.exist;
+          expect(a).to.eql([]);
+          done();
+        });
+      });
+      it('should match all parameters to a value in enum', function(done) {
+        var method = givenSharedStaticMethod(bar, generateOptions(true, true));
+        objects.invoke(method.name, [['a']], function(err, a) {
+          expect(err).to.not.exist;
+          expect(a).to.exist;
+          expect(a).to.eql(['a']);
+          done();
+        });
+      });
+      it('should match all parameters to all values in enum', function(done) {
+        var method = givenSharedStaticMethod(bar, generateOptions(true, true));
+        objects.invoke(method.name, [['a', 'b', 'c']], function(err, a) {
+          expect(err).to.not.exist;
+          expect(a).to.exist;
+          expect(a).to.eql(['a', 'b', 'c']);
+          done();
         });
       });
     });
@@ -347,7 +493,7 @@ describe('strong-remoting-rest', function(){
         expect(resp.body.error).to.have.property(prop, keyValues[prop]);
       }
       done();
-    }
+    };
   }
 
 });
