@@ -200,7 +200,7 @@ describe('strong-remoting-rest', function() {
     it('should turn off url-not-found handler', function(done) {
       objects.options.rest = { handleUnknownPaths: false };
       app.use(function(req, res, next) {
-        res.send(404, 'custom-not-found');
+        res.status(404).send('custom-not-found');
       });
 
       request(app).get('/thisUrlDoesNotExists/someMethod')
@@ -220,6 +220,31 @@ describe('strong-remoting-rest', function() {
       request(app).get(method.classUrl + '/thisMethodDoesNotExist')
         .expect(404)
         .expect('custom-not-found')
+        .end(done);
+    });
+
+    it('should by default use defined error handler', function(done) {
+      app.use(function(err, req, res, next) {
+        res.send('custom-error-handler-called');
+      });
+
+      request(app).get('/thisUrlDoesNotExists/someMethod')
+        .expect(404)
+        .expect(function(res) {
+          expect(res.text).not.to.equal('custom-error-handler-called');
+        })
+        .end(done);
+    });
+
+    it('should turn off error handler', function(done) {
+      objects.options.rest = { handleErrors: false };
+      app.use(function(err, req, res, next) {
+        res.send('custom-error-handler-called');
+      });
+
+      request(app).get('/thisUrlDoesNotExists/someMethod')
+        .expect(200)
+        .expect('custom-error-handler-called')
         .end(done);
     });
 
@@ -304,6 +329,25 @@ describe('strong-remoting-rest', function() {
         .expect(200)
         .expect('Content-Type', /xml/)
         .end(done);
+    });
+
+    it('should treat application/vnd.api+json accept header correctly', function(done) {
+      objects.options.rest = { supportedTypes: ['application/vnd.api+json'] };
+
+      var method = givenSharedStaticMethod(
+        function(cb) { cb(null, { value: 'value' }); },
+        { returns: { arg: 'result', type: 'object' } }
+      );
+
+      request(app).get(method.url)
+        .set('Accept', 'application/vnd.api+json')
+        .expect(200)
+        .expect('Content-Type', /application\/vnd\.api\+json/)
+        .end(function(err, res) {
+          if (err) return done(err);
+          expect(res.body).to.deep.equal({ result: { value: 'value' }});
+          done();
+        });
     });
   });
 

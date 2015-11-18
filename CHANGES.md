@@ -1,3 +1,85 @@
+2015-11-12, Version 2.22.2
+==========================
+
+ * Fix issue #251, now default responses are application/json (jaime.franco)
+
+ * Refer to licenses with a link (Sam Roberts)
+
+
+2015-10-30, Version 2.22.1
+==========================
+
+ * Support application/vnd.api+json media type (Richard Walker)
+
+
+2015-10-21, Version 2.22.0
+==========================
+
+ * Modify RestAdapter to allow disabling errorHandler (Richard Walker)
+
+ * Use strongloop conventions for licensing (Sam Roberts)
+
+ * Fix NPM license warning (Simon Ho)
+
+
+2015-09-18, Version 2.21.0
+==========================
+
+ * Add options to `sharedClass.methods()` for including all methods (Ritchie Martori)
+
+ * stringify mockWrapper so we can generate coverage (Ryan Graham)
+
+
+2015-09-01, Version 2.20.3
+==========================
+
+ * Generate wrapper function with same params as the original one (Raymond Feng)
+
+
+2015-09-01, Version 2.20.2
+==========================
+
+ * Fixate jayson version to prevent regression (Miroslav Bajtoš)
+
+ * Strictly depend on jayson@1.2.x (Ritchie Martori)
+
+ * Upgrade Travis to container-based infrastructure (Miroslav Bajtoš)
+
+ * Remove deprecation warning for res.send() (Bram Borggreve)
+
+ * check raw by constructor (yorkie)
+
+ * verify the accepts size <= 5000 (yorkie)
+
+
+2015-07-31, Version 2.20.1
+==========================
+
+ * Explicitly set req.protocol (Ritchie Martori)
+
+ * Update README.md (Rand McKinney)
+
+ * fix long lines in docs that were failing jshint (Ryan Graham)
+
+ * API doc fixes (crandmck)
+
+ * Clean up and fix API docs (crandmck)
+
+
+2015-07-08, Version 2.20.0
+==========================
+
+ * Add support for Event Source streams (Ritchie Martori)
+
+ * Add object mode ReadableStream support (Ritchie Martori)
+
+ * Update http-context.js (Rand McKinney)
+
+ * HttpContext: do not lowercase type when resolving dynamic converter (Jorrit Schippers)
+
+ * Rest Test: fixed express deprecation warning (Jorrit Schippers)
+
+
 2015-06-23, Version 2.19.0
 ==========================
 
@@ -277,15 +359,7 @@
 
  * Update contribution guidelines (Ryan Graham)
 
-
-2014-09-30, Version 2.4.0
-=========================
-
  * Add sharedClass.disableMethod() (Ritchie Martori)
-
-
-2014-09-26, Version 2.3.0
-=========================
 
  * Add prototype shared method tests (Krishna Raman)
 
@@ -351,13 +425,13 @@
 
  * Bump version (Raymond Feng)
 
+
+2014-08-07, Version 2.0.3
+=========================
+
  * Update deps (especially for qs) (Raymond Feng)
 
  * Fix the broken sample (Raymond Feng)
-
-
-2014-07-29, Version 2.0.3
-=========================
 
  * Improve shared class and method docs (Ritchie Martori)
 
@@ -433,11 +507,23 @@
 
  * Add more classes to JSDocs; some doc cleanup. (crandmck)
 
+ * !fixup use strongloop/node.js literal convention (Ritchie Martori)
+
+ * !fixup isDelegate tests (Ritchie Martori)
+
+ * Add test for `sharedClass.find(name)` (Ritchie Martori)
+
+ * Rename willInvoke => isDelegateFor (Ritchie Martori)
+
  * 2.0.0-beta3 (Miroslav Bajtoš)
 
  * Exclude body-parser from the browser bundle (Miroslav Bajtoš)
 
  * Remove duplicate dep (Raymond Feng)
+
+ * Add sharedMethod aliases (Ritchie Martori)
+
+ * Add sharedMethod.willInvoke(suspect) (Ritchie Martori)
 
  * Bump version (Raymond Feng)
 
@@ -448,22 +534,6 @@
  * Sort the routes so that methods can be resolved in order (Raymond Feng)
 
  * Upgrade to express 4.x (Raymond Feng)
-
-
-2014-06-03, Version 1.5.0
-=========================
-
- * !fixup use strongloop/node.js literal convention (Ritchie Martori)
-
- * !fixup isDelegate tests (Ritchie Martori)
-
- * Add test for `sharedClass.find(name)` (Ritchie Martori)
-
- * Rename willInvoke => isDelegateFor (Ritchie Martori)
-
- * Add sharedMethod aliases (Ritchie Martori)
-
- * Add sharedMethod.willInvoke(suspect) (Ritchie Martori)
 
 
 2014-05-30, Version 1.4.3
