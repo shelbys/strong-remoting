@@ -370,7 +370,7 @@ describe('strong-remoting-rest', function() {
             var method = givenSharedStaticMethod(bar, generateOptions(true, true));
             objects.invoke(method.name, [['a,b,c']], function(err, a) {
               expect(err).to.be.an.instanceof(Error);
-              expect(err.message).to.equal('\'a,b,c\' not one of: a, b, c');
+              expect(err.message).to.equal('\'a,b,c\' not any of: a, b, c');
               done();
             });
           }
